@@ -2,9 +2,12 @@
   "name": "stylis-plugin-rtl",
   "version": "1.0.0",
   "description": "Fork of stylis-rtl, uses cssjanus under the hood to flip style orientations for RTL",
-  "main": "dist/stylis-rtl.js",
+  "main": "dist/lib/stylis-rtl.js",
+  "module": "dist/esm/stylis-rtl.js",
   "scripts": {
-    "build": "babel src --out-dir dist --ignore test.js",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "babel --delete-dir-on-start -d dist/esm/ src/ --ignore \"src/*.test.js\"",
+    "build:cjs": "babel --delete-dir-on-start --env-name cjs -d dist/lib src/ --ignore \"src/*.test.js\"",
     "flow": "flow check",
     "prepublish": "npm run build",
     "test": "jest"
@@ -36,12 +39,14 @@
     "stylis": "3.x"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-flow": "^6.23.0",
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2",
+    "@babel/preset-flow": "^7.10.1",
+    "babel-jest": "^26.0.1",
     "flow-bin": "^0.78.0",
     "flow-typed": "^2.5.1",
-    "jest": "^23.5.0",
+    "jest": "^26.0.1",
     "prettier": "^1.19.1",
     "stylis": "^3.5.4"
   },
