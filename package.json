@@ -27,7 +27,7 @@
   "contributors": [
     "Evan Jacobs <probablyup@gmail.com> (https://probablyup.com)"
   ],
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/styled-components/stylis-plugin-rtl/issues"
   },
