@@ -4,6 +4,7 @@
   "description": "Fork of stylis-rtl, uses cssjanus under the hood to flip style orientations for RTL",
   "main": "dist/lib/stylis-rtl.js",
   "module": "dist/esm/stylis-rtl.js",
+  "types": "types/stylis-rtl.d.ts",
   "scripts": {
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "babel --delete-dir-on-start -d dist/esm/ src/ --ignore \"src/*.test.js\"",
@@ -12,6 +13,10 @@
     "prepublish": "npm run build",
     "test": "jest"
   },
+  "files": [
+    "dist",
+    "types"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/styled-components/stylis-plugin-rtl.git"

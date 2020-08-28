@@ -26,7 +26,6 @@ function stylisRTLPlugin(context: StylisContextType, content: string): ?string {
 
 // stable identifier that will not be dropped by minification unless the whole module
 // is unused
-/*#__PURE__*/
 Object.defineProperty(stylisRTLPlugin, "name", { value: "stylisRTLPlugin" });
 
 export default stylisRTLPlugin;
