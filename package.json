@@ -2,13 +2,13 @@
   "name": "stylis-plugin-rtl",
   "version": "1.0.0",
   "description": "Fork of stylis-rtl, uses cssjanus under the hood to flip style orientations for RTL",
-  "main": "dist/lib/stylis-rtl.js",
-  "module": "dist/esm/stylis-rtl.js",
+  "main": "dist/stylis-rtl.cjs.js",
+  "module": "dist/stylis-rtl.esm.js",
   "types": "types/stylis-rtl.d.ts",
   "scripts": {
-    "build": "npm run build:esm && npm run build:cjs",
-    "build:esm": "babel --delete-dir-on-start -d dist/esm/ src/ --ignore \"src/*.test.js\"",
-    "build:cjs": "babel --delete-dir-on-start --env-name cjs -d dist/lib src/ --ignore \"src/*.test.js\"",
+    "build": "rimraf dist && npm run build:esm && npm run build:cjs",
+    "build:esm": "babel src/ --out-dir dist --ignore \"src/*.test.js\" --out-file-extension .esm.js",
+    "build:cjs": "babel src/ --out-dir dist --ignore \"src/*.test.js\" --out-file-extension .cjs.js --env-name cjs",
     "flow": "flow check",
     "prepublish": "npm run build",
     "test": "jest"
@@ -53,6 +53,7 @@
     "flow-typed": "^2.5.1",
     "jest": "^26.0.1",
     "prettier": "^1.19.1",
+    "rimraf": "^3.0.2",
     "stylis": "^3.5.4"
   },
   "dependencies": {
