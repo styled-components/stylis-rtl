@@ -2,6 +2,9 @@
   "name": "stylis-plugin-rtl",
   "version": "2.0.0",
   "description": "Fork of stylis-rtl, uses cssjanus under the hood to flip style orientations for RTL",
+  "engines": {
+    "node": ">=10.0.0"
+  },
   "main": "dist/stylis-rtl.cjs.js",
   "module": "dist/stylis-rtl.esm.js",
   "types": "types/stylis-rtl.d.ts",
