@@ -1,31 +1,39 @@
 // @flow
 
-import cssjanus from "cssjanus";
+import cssjanus from 'cssjanus';
+import { COMMENT, compile, DECLARATION, IMPORT, KEYFRAMES, MEDIA, RULESET, serialize, strlen } from 'stylis';
 
-// https://github.com/thysultan/stylis.js#plugins
-const STYLIS_CONTEXTS = {
-  POST_PROCESS: -2,
-  PREPARATION: -1,
-  NEWLINE: 0,
-  PROPERTY: 1,
-  SELECTOR_BLOCK: 2,
-  AT_RULE: 3
-};
+function stringifyPreserveComments(element, index, children, callback) {
+  switch (element.type) {
+    case IMPORT:
+    case DECLARATION:
+    case COMMENT:
+      return (element.return = element.return || element.value);
+    case RULESET: {
+      element.value = element.props.join(',');
+      element.children.forEach((x) => {
+        if (x.type === COMMENT) x.children = x.value;
+      });
+    }
+  }
 
-export type StylisContextType = $Values<typeof STYLIS_CONTEXTS>;
+  return strlen((children = serialize(element.children, stringifyPreserveComments)))
+    ? (element.return = element.value + '{' + children + '}')
+    : '';
+}
 
-// We need to apply cssjanus as early as possible to capture the noflip directives if used
-// (they are not present at the PROPERTY, SELECTOR_BLOCK, or POST_PROCESS steps)
-export const STYLIS_PROPERTY_CONTEXT = STYLIS_CONTEXTS.PREPARATION;
+function stylisRTLPlugin(element: Object, index: number, children: Object[], callback: Function): ?string {
+  if (element.type === KEYFRAMES || (element.type === RULESET && (!element.parent || element.parent.type === MEDIA))) {
+    element.children = compile(
+      cssjanus.transform(stringifyPreserveComments(element, index, children, callback))
+    )[0].children;
 
-function stylisRTLPlugin(context: StylisContextType, content: string): ?string {
-  if (context === STYLIS_PROPERTY_CONTEXT) {
-    return cssjanus.transform(content);
+    element.return = '';
   }
 }
 
 // stable identifier that will not be dropped by minification unless the whole module
 // is unused
-Object.defineProperty(stylisRTLPlugin, "name", { value: "stylisRTLPlugin" });
+Object.defineProperty(stylisRTLPlugin, 'name', { value: 'stylisRTLPlugin' });
 
 export default stylisRTLPlugin;

@@ -1,80 +1,91 @@
 // @flow
+import { compile, middleware, prefixer, serialize, stringify } from 'stylis';
+import stylisRtlPlugin from './stylis-rtl';
 
-import Stylis from "stylis";
-import stylisRtlPlugin, { STYLIS_PROPERTY_CONTEXT } from "./stylis-rtl";
+const stylis = (css, extraPlugins = []) =>
+  serialize(compile(css), middleware([stylisRtlPlugin, ...extraPlugins, stringify]));
 
-const stylis = new Stylis();
-
-stylis.use(stylisRtlPlugin);
-
-describe("Stylis RTL Plugin", () => {
-  it("converts LTR to RTL", () => {
-    expect(
-      stylisRtlPlugin(STYLIS_PROPERTY_CONTEXT, "padding-left: 2px;")
-    ).toEqual("padding-right: 2px;");
-    expect(
-      stylisRtlPlugin(STYLIS_PROPERTY_CONTEXT, "margin: 0 1px 0 2px;")
-    ).toEqual("margin: 0 2px 0 1px;");
-  });
-
-  it("allows you to skip rules via comments", () => {
-    const input = `
-      margin: 0 2px 0 1px;
-      /* @noflip */
-      margin: 0 1px 0 2px;
-      /* just a regular comment */
-      margin: 0 2px 0 1px;
-    `;
-
-    const output = `
-      margin: 0 1px 0 2px;
-      /* @noflip */
-      margin: 0 1px 0 2px;
-      /* just a regular comment */
-      margin: 0 1px 0 2px;
-    `;
-    expect(stylisRtlPlugin(STYLIS_PROPERTY_CONTEXT, input)).toEqual(output);
-  });
-});
-
-describe("integration test with stylis", () => {
-  it("flips simple rules", () => {
+describe('integration test with stylis', () => {
+  it('flips simple rules', () => {
     expect(
       stylis(
-        ".a",
-        `
-      padding-left: 5px;
-      margin-right: 5px;
-      border-left: 1px solid red;
-    `
+        `.a {
+          padding-left: 5px;
+          margin-right: 5px;
+          border-left: 1px solid red;
+        }
+      `
       )
-    ).toMatchInlineSnapshot(
-      `".a{padding-right:5px;margin-left:5px;border-right:1px solid red;}"`
-    );
+    ).toMatchInlineSnapshot(`".a{padding-right:5px;margin-left:5px;border-right:1px solid red;}"`);
   });
 
-  it("flips shorthands", () => {
+  it('flips shorthands', () => {
     expect(
       stylis(
-        ".a",
+        `.a {
+          padding: 0 5px 0 0;
+          margin: 0 0 0 5px;
+        }
         `
-      padding: 0 5px 0 0;
-      margin: 0 0 0 5px;
-    `
       )
     ).toMatchInlineSnapshot(`".a{padding:0 0 0 5px;margin:0 5px 0 0;}"`);
   });
 
-  it("handles noflip directives", () => {
+  it('handles noflip directives', () => {
     expect(
       stylis(
-        ".a",
         `
-        /* @noflip */
-      padding: 0 5px 0 0;
-      margin: 0 0 0 5px;
-    `
+          .a {
+            /* @noflip */
+            padding: 0 5px 0 0;
+            margin: 0 0 0 5px;
+          }
+        `
       )
     ).toMatchInlineSnapshot(`".a{padding:0 5px 0 0;margin:0 5px 0 0;}"`);
+  });
+
+  it('flips keyframes', () => {
+    expect(
+      stylis(
+        `@keyframes a {
+          0% { left: 0px; }
+          100% { left: 100px; }
+        }
+      `
+      )
+    ).toMatchInlineSnapshot(`"@keyframes a{0%{right:0px;}100%{right:100px;}}"`);
+  });
+
+  it('flips media queries', () => {
+    expect(
+      stylis(
+        `@media (min-width: 500px) {
+          .a {
+            padding-left: 5px;
+            margin-right: 5px;
+            border-left: 1px solid red;
+          }
+        }
+      `
+      )
+    ).toMatchInlineSnapshot(
+      `"@media (min-width: 500px){.a{padding-right:5px;margin-left:5px;border-right:1px solid red;}}"`
+    );
+  });
+
+  it('works in tandem with prefixer', () => {
+    expect(
+      stylis(
+        `@keyframes a {
+          0% { left: 0px; }
+          100% { left: 100px; }
+        }
+      `,
+        [prefixer]
+      )
+    ).toMatchInlineSnapshot(
+      `"@-webkit-keyframes a{0%{right:0px;}100%{right:100px;}}@keyframes a{0%{right:0px;}100%{right:100px;}}"`
+    );
   });
 });
