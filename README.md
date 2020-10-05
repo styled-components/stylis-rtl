@@ -37,4 +37,11 @@ function MakeItRTL() {
 }
 ```
 
+#### NOTE: Preventing flipping
+
+Because minification removes all comments from your CSS before it passes to `<StyleSheetManager>`, `/* @noflip */` comment won't work. 
+You will have to either:
+- add an exclamation mark at the beginning of the comment, like this  `/*! @noflip */`, to prevent it from being removed
+- disable minification entirely by setting `minify` to `false` in `.babelrc` (see [styled-components documentation](https://styled-components.com/docs/tooling#minification)).
+
 <small>This is a fork of `stylis-rtl` for use with styled-components v5+</small>
