@@ -24,9 +24,10 @@ function stringifyPreserveComments(element, index, children, callback) {
 
 function stylisRTLPlugin(element: Object, index: number, children: Object[], callback: Function): ?string {
   if (element.type === KEYFRAMES || (element.type === RULESET && (!element.parent || element.parent.type === MEDIA))) {
-    element.children = compile(
-      cssjanus.transform(stringifyPreserveComments(element, index, children, callback))
-    )[0].children;
+    const stringified = cssjanus.transform(
+      stringifyPreserveComments(element, index, children, callback)
+    );
+    element.children = stringified ? compile(stringified)[0].children : [];
 
     element.return = '';
   }

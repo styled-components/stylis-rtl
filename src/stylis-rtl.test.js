@@ -88,4 +88,19 @@ describe('integration test with stylis', () => {
       `"@-webkit-keyframes a{0%{right:0px;}100%{right:100px;}}@keyframes a{0%{right:0px;}100%{right:100px;}}"`
     );
   });
+
+  it("doesn't crash on empty rules", () => {
+    // this generates nodes for:
+    // .cls{}
+    // .cls .nested{color:hotpink;}
+    expect(
+      stylis(`
+        .cls {
+          & .nested {
+            color:hotpink;
+          }
+        }
+      `)
+    ).toMatchInlineSnapshot(`".cls .nested{color:hotpink;}"`);
+  });
 });
