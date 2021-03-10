@@ -3,7 +3,7 @@ import { compile, middleware, prefixer, serialize, stringify } from 'stylis';
 import stylisRtlPlugin from './stylis-rtl';
 
 const stylis = (css, extraPlugins = []) =>
-  serialize(compile(css), middleware([stylisRtlPlugin, ...extraPlugins, stringify]));
+  serialize(compile(css), middleware([...extraPlugins, stylisRtlPlugin, stringify]));
 
 describe('integration test with stylis', () => {
   it('flips simple rules', () => {
@@ -74,6 +74,23 @@ describe('integration test with stylis', () => {
     );
   });
 
+  it('flips supports queries', () => {
+    expect(
+      stylis(
+        `@supports (display: flex) {
+          .a {
+            padding-left: 5px;
+            margin-right: 5px;
+            border-left: 1px solid red;
+          }
+        }
+      `
+      )
+    ).toMatchInlineSnapshot(
+      `"@supports (display: flex){.a{padding-right:5px;margin-left:5px;border-right:1px solid red;}}"`
+    );
+  });
+
   it('works in tandem with prefixer', () => {
     expect(
       stylis(
@@ -102,5 +119,18 @@ describe('integration test with stylis', () => {
         }
       `)
     ).toMatchInlineSnapshot(`".cls .nested{color:hotpink;}"`);
+  });
+
+  it("works for nested rules", () => {
+    expect(
+      stylis(`
+        .cls {
+          margin-right: 32px;
+          & .first-child {
+            margin-right: 32px;
+          }
+        }
+      `)
+    ).toMatchInlineSnapshot(`".cls{margin-left:32px;}.cls .first-child{margin-left:32px;}"`);
   });
 });
