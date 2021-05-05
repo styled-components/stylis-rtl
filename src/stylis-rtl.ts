@@ -1,5 +1,17 @@
 import cssjanus from 'cssjanus';
-import { COMMENT, compile, DECLARATION, IMPORT, RULESET, serialize, strlen, Middleware } from 'stylis';
+import {
+  COMMENT,
+  compile,
+  DECLARATION,
+  IMPORT,
+  RULESET,
+  serialize,
+  strlen,
+  Middleware,
+  KEYFRAMES,
+  MEDIA,
+  SUPPORTS,
+} from 'stylis';
 
 type MiddlewareParams = Parameters<Middleware>;
 
@@ -35,7 +47,11 @@ function stylisRTLPlugin(
   children: MiddlewareParams[2],
   callback: MiddlewareParams[3]
 ): string | void {
-  if (!element.root) {
+  if (
+    element.type === KEYFRAMES ||
+    element.type === SUPPORTS ||
+    (element.type === RULESET && (!element.parent || element.parent.type === MEDIA || element.parent.type === RULESET))
+  ) {
     const stringified = cssjanus.transform(stringifyPreserveComments(element, index, children));
     element.children = stringified ? compile(stringified)[0].children : [];
 

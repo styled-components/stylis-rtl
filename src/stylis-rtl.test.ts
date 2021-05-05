@@ -2,7 +2,7 @@ import { compile, Middleware, middleware, prefixer, serialize, stringify } from 
 import stylisRtlPlugin from './stylis-rtl';
 
 const stylis = (css: string, extraPlugins: Middleware[] = []) =>
-  serialize(compile(css), middleware([...extraPlugins, stylisRtlPlugin, stringify]));
+  serialize(compile(css), middleware([stylisRtlPlugin, ...extraPlugins, stringify]));
 
 describe('integration test with stylis', () => {
   it('flips simple rules', () => {
