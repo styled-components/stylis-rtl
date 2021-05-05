@@ -1,8 +1,7 @@
-// @flow
-import { compile, middleware, prefixer, serialize, stringify } from 'stylis';
+import { compile, Middleware, middleware, prefixer, serialize, stringify } from 'stylis';
 import stylisRtlPlugin from './stylis-rtl';
 
-const stylis = (css, extraPlugins = []) =>
+const stylis = (css: string, extraPlugins: Middleware[] = []) =>
   serialize(compile(css), middleware([...extraPlugins, stylisRtlPlugin, stringify]));
 
 describe('integration test with stylis', () => {
@@ -121,7 +120,7 @@ describe('integration test with stylis', () => {
     ).toMatchInlineSnapshot(`".cls .nested{color:hotpink;}"`);
   });
 
-  it("works for nested rules", () => {
+  it('works for nested rules', () => {
     expect(
       stylis(`
         .cls {
