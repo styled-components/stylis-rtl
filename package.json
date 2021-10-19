@@ -41,13 +41,13 @@
     "stylis": "4.x"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.23",
-    "@types/stylis": "^4.0.0",
-    "jest": "^27.0.6",
-    "prettier": "^2.1.1",
+    "@types/jest": "^27.0.2",
+    "@types/stylis": "^4.0.2",
+    "jest": "^27.3.1",
+    "prettier": "^2.4.1",
     "stylis": "^4.0.2",
-    "ts-jest": "^27.0.3",
-    "typescript": "^4.2.4"
+    "ts-jest": "^27.0.7",
+    "typescript": "^4.4.4"
   },
   "dependencies": {
     "cssjanus": "^2.0.1"
