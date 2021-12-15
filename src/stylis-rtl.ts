@@ -53,6 +53,7 @@ function stylisRTLPlugin(
     (element.type === RULESET && (!element.parent || element.parent.type === MEDIA || element.parent.type === RULESET))
   ) {
     const stringified = cssjanus.transform(stringifyPreserveComments(element, index, children));
+
     element.children = stringified ? compile(stringified)[0].children : [];
 
     element.return = '';
